@@ -10,12 +10,14 @@ public class LightMixer : MonoBehaviour {
         Mix,
         MixShadowLayer
     }
-    RenderTexture rtLight;
+    [HideInInspector]
+    public RenderTexture rtLight;
     [HideInInspector]
     public Camera lightCam;
     [HideInInspector]
     public Camera targetcam;
-    Material m;
+    [HideInInspector]
+    public Material m;
     public LightMixType mixType;
     public LayerMask lightLayer;
 
@@ -35,7 +37,8 @@ public class LightMixer : MonoBehaviour {
     public float colorMultiplyValue = 0.5f;
 
 
-    RenderTexture rtCulling;
+    [HideInInspector]
+    public RenderTexture rtCulling;
     Camera cullingCam;
     // Use this for initialization
     void Start () {
@@ -51,8 +54,7 @@ public class LightMixer : MonoBehaviour {
         targetcam = GetComponent<Camera>();
         if (targetcam == null)
             targetcam = Camera.main;
-        if (rtLight == null)
-            rtLight = new RenderTexture(targetcam.pixelHeight, targetcam.pixelHeight, 0);
+        rtLight = new RenderTexture(targetcam.pixelHeight, targetcam.pixelHeight, 0);
 
         if(lightCam == null)
             lightCam = new GameObject().AddComponent<Camera>();
@@ -89,11 +91,10 @@ public class LightMixer : MonoBehaviour {
     void InitShadowLayer()
     {
         InitCamera();
-        if (rtCulling == null)
-            rtCulling = new RenderTexture(targetcam.pixelHeight, targetcam.pixelHeight, 0);
+        rtCulling = new RenderTexture(targetcam.pixelHeight, targetcam.pixelHeight, 0);
 
-
-        cullingCam = new GameObject().AddComponent<Camera>();
+        if(cullingCam == null)
+            cullingCam = new GameObject().AddComponent<Camera>();
         cullingCam.targetTexture = rtCulling;
         cullingCam.transform.SetParent(targetcam.transform);
         cullingCam.transform.localPosition = Vector3.zero;
@@ -112,6 +113,8 @@ public class LightMixer : MonoBehaviour {
     }
     void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
+        if (rtLight == null)
+            return;
         switch (mixType)
         {
             case LightMixType.Add:
@@ -170,9 +173,10 @@ public class LightMixer : MonoBehaviour {
         to.orthographic = from.orthographic;
         to.orthographicSize = from.orthographicSize;
         to.fieldOfView = from.fieldOfView;
+        to.aspect = from.aspect;
 
     }
-    void OnValidate()
+    public void UpdateMixer()
     {
         switch (mixType)
         {
