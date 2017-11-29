@@ -39,10 +39,10 @@ public class LightMixer : MonoBehaviour {
 
     [HideInInspector]
     public RenderTexture rtCulling;
-    Camera cullingCam;
+    public Camera cullingCam;
     // Use this for initialization
     void Start () {
-       
+        UpdateMixer();
     }
 	
 	// Update is called once per frame
