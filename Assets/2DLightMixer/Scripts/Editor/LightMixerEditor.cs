@@ -26,7 +26,36 @@ public class LightMixerEditor : Editor {
             case LightMixer.LightMixType.Mix:
                 myTarget.mixColorValue = EditorGUILayout.FloatField("mix value", myTarget.mixColorValue);
                 myTarget.mixColor = EditorGUILayout.ColorField("mix Color", myTarget.mixColor);
-
+                break;
+            case LightMixer.LightMixType.Darken:
+                myTarget.lightAdd = EditorGUILayout.FloatField("light add value", myTarget.lightAdd);
+                break;
+            case LightMixer.LightMixType.Screen:
+                myTarget.lightAdd = EditorGUILayout.FloatField("light add value", myTarget.lightAdd);
+                break;
+            case LightMixer.LightMixType.Lighten:
+                myTarget.lightAdd = EditorGUILayout.FloatField("light add value", myTarget.lightAdd);
+                break;
+            case LightMixer.LightMixType.Difference:
+                myTarget.lightAdd = EditorGUILayout.FloatField("light add value", myTarget.lightAdd);
+                break;
+            case LightMixer.LightMixType.Negation:
+                myTarget.lightAdd = EditorGUILayout.FloatField("light add value", myTarget.lightAdd);
+                break;
+            case LightMixer.LightMixType.Exclusion:
+                myTarget.lightAdd = EditorGUILayout.FloatField("light add value", myTarget.lightAdd);
+                break;
+            case LightMixer.LightMixType.Overlay:
+                myTarget.lightAdd = EditorGUILayout.FloatField("light add value", myTarget.lightAdd);
+                break;
+            case LightMixer.LightMixType.HardLight:
+                myTarget.lightAdd = EditorGUILayout.FloatField("light add value", myTarget.lightAdd);
+                break;
+            case LightMixer.LightMixType.SoftLight:
+                myTarget.lightAdd = EditorGUILayout.FloatField("light add value", myTarget.lightAdd);
+                break;
+            case LightMixer.LightMixType.Dodge:
+                myTarget.lightAdd = EditorGUILayout.FloatField("light add value", myTarget.lightAdd);
                 break;
             case LightMixer.LightMixType.MixShadowLayer:
                 LayerMask tempMask2 = EditorGUILayout.MaskField(InternalEditorUtility.LayerMaskToConcatenatedLayersMask(myTarget.CullingLayer), InternalEditorUtility.layers);

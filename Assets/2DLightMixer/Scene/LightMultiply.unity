@@ -178,33 +178,35 @@ Transform:
   m_Father: {fileID: 942736071}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!84 &337809161
-RenderTexture:
+--- !u!21 &390004762
+Material:
+  serializedVersion: 6
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_Width: 1080
-  m_Height: 1080
-  m_AntiAliasing: 1
-  m_DepthFormat: 0
-  m_ColorFormat: 0
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
+  m_Name: Hidden/MultiplyLight
+  m_Shader: {fileID: 4800000, guid: a0ff29232cbf64448b1c616d4210778a, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _LightLayer:
+        m_Texture: {fileID: 1265727805}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _MultiplyValue: 0.9
+    m_Colors:
+    - _ShadowColor: {r: 0.07379972, g: 0.085670695, b: 0.09558821, a: 0}
 --- !u!84 &457624291
 RenderTexture:
   m_ObjectHideFlags: 0
@@ -366,7 +368,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 875726591}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.54, y: -1.58, z: 0}
+  m_LocalPosition: {x: -3.68, y: 0.68, z: 0}
   m_LocalScale: {x: 0.5643791, y: 0.56437945, z: 0.56437945}
   m_Children: []
   m_Father: {fileID: 0}
@@ -437,17 +439,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c000e13194739c459776c7027cd02d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rtLight: {fileID: 337809161}
+  rtLight: {fileID: 1265727805}
   lightCam: {fileID: 1455543230}
   targetcam: {fileID: 1022731026}
-  m: {fileID: 2095579928}
+  m: {fileID: 390004762}
   mixType: 1
   lightLayer:
     serializedVersion: 2
     m_Bits: 256
   lightAdd: 0.2
-  multiplyFactor: 0.6
-  mulitpyColor: {r: 0, g: 0, b: 0, a: 0}
+  multiplyFactor: 0.9
+  mulitpyColor: {r: 0.07379972, g: 0.085670695, b: 0.09558821, a: 0}
   mixColorValue: 1
   mixColor: {r: 0.060012985, g: 0.06569921, b: 0.07352942, a: 1}
   CullingLayer:
@@ -458,6 +460,7 @@ MonoBehaviour:
   cullingColor: {r: 0.17517301, g: 0.26100108, b: 0.2647059, a: 1}
   colorMultiplyValue: 0.8
   rtCulling: {fileID: 0}
+  cullingCam: {fileID: 0}
 --- !u!81 &1022731024
 AudioListener:
   m_ObjectHideFlags: 0
@@ -728,6 +731,33 @@ Transform:
   m_Father: {fileID: 942736071}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!84 &1265727805
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_Width: 1080
+  m_Height: 1080
+  m_AntiAliasing: 1
+  m_DepthFormat: 0
+  m_ColorFormat: 0
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!1 &1455543229
 GameObject:
   m_ObjectHideFlags: 0
@@ -770,7 +800,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 256
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 337809161}
+  m_TargetTexture: {fileID: 1265727805}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -1073,35 +1103,6 @@ Transform:
   m_Father: {fileID: 942736071}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &2095579928
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: Hidden/MultiplyLight
-  m_Shader: {fileID: 4800000, guid: a0ff29232cbf64448b1c616d4210778a, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _LightLayer:
-        m_Texture: {fileID: 337809161}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - _MultiplyValue: 0.6
-    m_Colors:
-    - _ShadowColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &2118869966
 GameObject:
   m_ObjectHideFlags: 0

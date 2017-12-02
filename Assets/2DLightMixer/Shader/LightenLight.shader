@@ -1,4 +1,4 @@
-﻿Shader "Hidden/AddLight"
+﻿Shader "Hidden/LightenLight"
 {
 	Properties
 	{
@@ -45,8 +45,9 @@
 			fixed4 frag (v2f i) : SV_Target
 			{
 				fixed4 col = tex2D(_MainTex, i.uv);
-				fixed4 l = tex2D(_LightLayer, i.uv)*_AddValue;
-				return col+l;
+				fixed4 l = tex2D(_LightLayer, i.uv);
+				fixed4 c = max(col, l);
+				return lerp(col,c,_AddValue);
 			}
 			ENDCG
 		}

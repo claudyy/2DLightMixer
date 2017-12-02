@@ -8,6 +8,16 @@ public class LightMixer : MonoBehaviour {
         Add,
         Multiply,
         Mix,
+        Darken,
+        Screen,
+        Lighten,
+        Difference,
+        Negation,
+        Exclusion,
+        Overlay,
+        HardLight,
+        SoftLight,
+        Dodge,
         MixShadowLayer
     }
     [HideInInspector]
@@ -39,10 +49,12 @@ public class LightMixer : MonoBehaviour {
 
     [HideInInspector]
     public RenderTexture rtCulling;
+    [HideInInspector]
     public Camera cullingCam;
     // Use this for initialization
     void Start () {
         UpdateMixer();
+        
     }
 	
 	// Update is called once per frame
@@ -54,7 +66,7 @@ public class LightMixer : MonoBehaviour {
         targetcam = GetComponent<Camera>();
         if (targetcam == null)
             targetcam = Camera.main;
-        rtLight = new RenderTexture(targetcam.pixelHeight, targetcam.pixelHeight, 0);
+        rtLight = new RenderTexture(targetcam.pixelWidth, targetcam.pixelHeight, 0);
 
         if(lightCam == null)
             lightCam = new GameObject().AddComponent<Camera>();
@@ -88,10 +100,50 @@ public class LightMixer : MonoBehaviour {
         InitCamera();
         m = new Material(Shader.Find("Hidden/MixColorShadow"));
     }
+    void InitScreen() {
+        InitCamera();
+        m = new Material(Shader.Find("Hidden/ScreenLight"));
+    }
+    void InitDarken() {
+        InitCamera();
+        m = new Material(Shader.Find("Hidden/DarkenLight"));
+    }
+    void InitLighten() {
+        InitCamera();
+        m = new Material(Shader.Find("Hidden/LightenLight"));
+    }
+    void InitDifference() {
+        InitCamera();
+        m = new Material(Shader.Find("Hidden/DifferenceLight"));
+    }
+    void InitNegation() {
+        InitCamera();
+        m = new Material(Shader.Find("Hidden/NegationLight"));
+    }
+    void InitExclusion() {
+        InitCamera();
+        m = new Material(Shader.Find("Hidden/ExclusionLight"));
+    }
+    void InitOverlay() {
+        InitCamera();
+        m = new Material(Shader.Find("Hidden/OverlayLight"));
+    }
+    void InitHardLight() {
+        InitCamera();
+        m = new Material(Shader.Find("Hidden/HardLightLight"));
+    }
+    void InitSoftLight() {
+        InitCamera();
+        m = new Material(Shader.Find("Hidden/SoftLightLight"));
+    }
+    void InitDodge() {
+        InitCamera();
+        m = new Material(Shader.Find("Hidden/DodgeLight"));
+    }
     void InitShadowLayer()
     {
         InitCamera();
-        rtCulling = new RenderTexture(targetcam.pixelHeight, targetcam.pixelHeight, 0);
+        rtCulling = new RenderTexture(targetcam.pixelWidth, targetcam.pixelHeight, 0);
 
         if(cullingCam == null)
             cullingCam = new GameObject().AddComponent<Camera>();
@@ -103,6 +155,7 @@ public class LightMixer : MonoBehaviour {
         cullingCam.cullingMask = CullingLayer;
         cullingCam.clearFlags = CameraClearFlags.Color;
         ApplyCameraSetting(targetcam, cullingCam);
+        cullingCam.backgroundColor = targetcam.backgroundColor;
         m = new Material(Shader.Find("Hidden/MixWithCamera"));
     }
     void UpdateCamera()
@@ -126,6 +179,36 @@ public class LightMixer : MonoBehaviour {
             case LightMixType.Mix:
                 LightMixColor(source, destination);
                 break;
+            case LightMixType.Darken:
+                LightAdd(source, destination);
+                break;
+            case LightMixType.Screen:
+                LightAdd(source, destination);
+                break;
+            case LightMixType.Lighten:
+                LightAdd(source, destination);
+                break;
+            case LightMixType.Difference:
+                LightAdd(source, destination);
+                break;
+            case LightMixType.Negation:
+                LightAdd(source, destination);
+                break;
+            case LightMixType.Exclusion:
+                LightAdd(source, destination);
+                break;
+            case LightMixType.Overlay:
+                LightAdd(source, destination);
+                break;
+            case LightMixType.HardLight:
+                LightAdd(source, destination);
+                break;
+            case LightMixType.SoftLight:
+                LightAdd(source, destination);
+                break;
+            case LightMixType.Dodge:
+                LightAdd(source, destination);
+                break;
             case LightMixType.MixShadowLayer:
                 LightMixWithLayer(source, destination);
                 break;
@@ -134,6 +217,7 @@ public class LightMixer : MonoBehaviour {
         }
         
     }
+    #region Blits
     void LightAdd(RenderTexture source, RenderTexture destination)
     {
         m.SetFloat("_AddValue", lightAdd);
@@ -157,6 +241,42 @@ public class LightMixer : MonoBehaviour {
         m.SetTexture("_LightLayer", rtLight);
         Graphics.Blit(source, destination, m);
     }
+    void LightDarken(RenderTexture source, RenderTexture destination) {
+        m.SetFloat("_AddValue", lightAdd);
+
+        m.SetTexture("_LightLayer", rtLight);
+        Graphics.Blit(source, destination, m);
+    }
+    void LightScreen(RenderTexture source, RenderTexture destination) {
+        m.SetFloat("_AddValue", lightAdd);
+
+        m.SetTexture("_LightLayer", rtLight);
+        Graphics.Blit(source, destination, m);
+    }
+    void LightDifference(RenderTexture source, RenderTexture destination) {
+        m.SetFloat("_AddValue", lightAdd);
+
+        m.SetTexture("_LightLayer", rtLight);
+        Graphics.Blit(source, destination, m);
+    }
+    void LightNegation(RenderTexture source, RenderTexture destination) {
+        m.SetFloat("_AddValue", lightAdd);
+
+        m.SetTexture("_LightLayer", rtLight);
+        Graphics.Blit(source, destination, m);
+    }
+    void LightExclusion(RenderTexture source, RenderTexture destination) {
+        m.SetFloat("_AddValue", lightAdd);
+
+        m.SetTexture("_LightLayer", rtLight);
+        Graphics.Blit(source, destination, m);
+    }
+    void LightOverlay(RenderTexture source, RenderTexture destination) {
+        m.SetFloat("_AddValue", lightAdd);
+
+        m.SetTexture("_LightLayer", rtLight);
+        Graphics.Blit(source, destination, m);
+    }
     void LightMixWithLayer(RenderTexture source, RenderTexture destination)
     {
         m.SetFloat("_MixValue", cullingMixValue);
@@ -176,6 +296,7 @@ public class LightMixer : MonoBehaviour {
         to.aspect = from.aspect;
 
     }
+    #endregion
     public void UpdateMixer()
     {
         switch (mixType)
@@ -188,6 +309,36 @@ public class LightMixer : MonoBehaviour {
                 break;
             case LightMixType.Mix:
                 InitMixColor();
+                break;
+            case LightMixType.Darken:
+                InitDarken();
+                break;
+            case LightMixType.Screen:
+                InitScreen();
+                break;
+            case LightMixType.Lighten:
+                InitLighten();
+                break;
+            case LightMixType.Difference:
+                InitDifference();
+                break;
+            case LightMixType.Negation:
+                InitNegation();
+                break;
+            case LightMixType.Exclusion:
+                InitExclusion();
+                break;
+            case LightMixType.Overlay:
+                InitOverlay();
+                break;
+            case LightMixType.HardLight:
+                InitHardLight();
+                break;
+            case LightMixType.SoftLight:
+                InitSoftLight();
+                break;
+            case LightMixType.Dodge:
+                InitDodge();
                 break;
             case LightMixType.MixShadowLayer:
                 InitShadowLayer();
