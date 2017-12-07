@@ -19,3 +19,4 @@ Mix with other Layer
 The Render Texture is used as a mask to mix the main Camera with another Camera. What this camera renders can be defined by the user. 
 This effect can be used to create a line of sight effect.
 
+Make sure to tweet at me(@ClaudeFehlen) if you create something interesting. 
