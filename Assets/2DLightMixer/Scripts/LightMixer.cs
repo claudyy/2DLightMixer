@@ -51,6 +51,8 @@ public class LightMixer : MonoBehaviour {
     public RenderTexture rtCulling;
     [HideInInspector]
     public Camera cullingCam;
+
+    public LightModifier lightModifer;
     // Use this for initialization
     void Start () {
         UpdateMixer();
@@ -61,6 +63,7 @@ public class LightMixer : MonoBehaviour {
 	void Update () {
         UpdateCamera();
     }
+    #region Init
     void InitCamera()
     {
         targetcam = GetComponent<Camera>();
@@ -158,6 +161,7 @@ public class LightMixer : MonoBehaviour {
         cullingCam.backgroundColor = targetcam.backgroundColor;
         m = new Material(Shader.Find("Hidden/MixWithCamera"));
     }
+#endregion
     void UpdateCamera()
     {
         if (lightCam == null)
@@ -168,6 +172,7 @@ public class LightMixer : MonoBehaviour {
     {
         if (rtLight == null)
             return;
+        Blur(source, destination, rtLight);
         switch (mixType)
         {
             case LightMixType.Add:
@@ -299,6 +304,9 @@ public class LightMixer : MonoBehaviour {
     #endregion
     public void UpdateMixer()
     {
+        if (copyrtLight == null) {
+            copyrtLight = new RenderTexture(rtLight.width, rtLight.height, rtLight.depth);
+        }
         switch (mixType)
         {
             case LightMixType.Add:
@@ -346,5 +354,16 @@ public class LightMixer : MonoBehaviour {
             default:
                 break;
         }
+    }
+    private RenderTexture copyrtLight;
+    public Material blurM;
+
+    void Blur(RenderTexture source, RenderTexture destination, RenderTexture rtLight) {
+        if (blurM == null)
+            return;
+        blurM.SetFloat("_ScreenWidth", rtLight.width);
+        blurM.SetFloat("_ScreenHeight", rtLight.height);
+        Graphics.Blit(rtLight, copyrtLight);
+        Graphics.Blit(copyrtLight, rtLight, blurM);
     }
 }

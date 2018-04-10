@@ -5,15 +5,26 @@ using UnityEditor;
 using UnityEditorInternal;
 [CustomEditor(typeof(LightMixer))]
 public class LightMixerEditor : Editor {
+    SerializedProperty modifier;
+    SerializedProperty mixer;
+    private void OnEnable() {
+        modifier = serializedObject.FindProperty("lightModifer");
 
+    }
     public override void OnInspectorGUI() {
         LightMixer myTarget = (LightMixer)target;
-
         myTarget.mixType = (LightMixer.LightMixType)EditorGUILayout.EnumPopup("Light mix type:", myTarget.mixType);
         //myTarget.lightLayer = EditorGUILayout.LayerField("Player Flags", myTarget.lightLayer);
         LayerMask tempMask = EditorGUILayout.MaskField(InternalEditorUtility.LayerMaskToConcatenatedLayersMask(myTarget.lightLayer), InternalEditorUtility.layers);
         myTarget.lightLayer = InternalEditorUtility.ConcatenatedLayersMaskToLayerMask(tempMask);
         LightMixer.LightMixType type = myTarget.mixType;
+
+        //EditorGUILayout.PropertyField(serializedObject.FindProperty("copyrtLight"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("blurM"));
+        serializedObject.ApplyModifiedProperties();
+        //ShowRelativeProperty(modifier, "type");
+        //ShowRelativeProperty(modifier, "m");
+        //ShowRelativeProperty(modifier, "copyrtLight");
         switch (type) {
             case LightMixer.LightMixType.Add:
                 myTarget.lightAdd = EditorGUILayout.FloatField("light add value", myTarget.lightAdd);
@@ -74,6 +85,18 @@ public class LightMixerEditor : Editor {
             UpdateLightMixer(myTarget);
         //myTarget.experience = EditorGUILayout.IntField("Experience", myTarget.experience);
         //EditorGUILayout.LabelField("Level", myTarget.Level.ToString());
+    }
+    void ShowRelativeProperty(SerializedProperty serializedProperty, string propertyName) {
+        SerializedProperty property = serializedProperty.FindPropertyRelative(propertyName);
+        if (property != null) {
+            EditorGUI.indentLevel++;
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.PropertyField(property, true);
+            if (EditorGUI.EndChangeCheck())
+                serializedObject.ApplyModifiedProperties();
+            EditorGUIUtility.LookLikeControls();
+            EditorGUI.indentLevel--;
+        }
     }
     void UpdateLightMixer(LightMixer mixer) {
         mixer.UpdateMixer();
