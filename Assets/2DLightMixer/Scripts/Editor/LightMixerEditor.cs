@@ -89,9 +89,9 @@ public class LightMixerEditor : Editor {
         for (int i = 0; i < modifiers.Count; i++) {
             modifiers[i].OnInspector();
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Down"))
-                ModifierMoveDown(i,modifiers);
             if (GUILayout.Button("Up"))
+                ModifierMoveDown(i,modifiers);
+            if (GUILayout.Button("Down"))
                 ModifierMoveUp(i, modifiers);
             if (GUILayout.Button("Remove"))
                 RemoveModifier(i, modifiers);
@@ -102,12 +102,18 @@ public class LightMixerEditor : Editor {
         modifiers.RemoveAt(index);
     }
     void ModifierMoveUp(int index, List<LightModifier> modifiers) {
-
+        if (index == modifiers.Count - 1)
+            return;
+        var temp = modifiers[index + 1];
+        modifiers[index + 1] = modifiers[index];
+        modifiers[index] = temp;
     }
     void ModifierMoveDown(int index, List<LightModifier> modifiers) {
-
+        if (index == 0)
+            return;
+        var temp = modifiers[index - 1];
+        modifiers[index - 1] = modifiers[index];
+        modifiers[index] = temp;
     }
-    void DisplayModifier() {
 
-    }
 }
