@@ -307,9 +307,7 @@ public class LightMixer : MonoBehaviour {
     #endregion
     public void UpdateMixer()
     {
-        if (copyrtLight == null) {
-            copyrtLight = new RenderTexture(rtLight.width, rtLight.height, rtLight.depth);
-        }
+
         switch (mixType)
         {
             case LightMixType.Add:
@@ -358,15 +356,23 @@ public class LightMixer : MonoBehaviour {
                 break;
         }
     }
-    private RenderTexture copyrtLight;
-    public Material blurM;
 
-    void Blur(RenderTexture source, RenderTexture destination, RenderTexture rtLight) {
-        if (blurM == null)
-            return;
-        blurM.SetFloat("_ScreenWidth", rtLight.width);
-        blurM.SetFloat("_ScreenHeight", rtLight.height);
-        Graphics.Blit(rtLight, copyrtLight);
-        Graphics.Blit(copyrtLight, rtLight, blurM);
+    #region Modifiers
+    public void ActivateAllModifier() {
+        for (int i = 0; i < lightModifers.Count; i++) {
+            SetActivateModifier(i, true);
+        }
     }
+    public void DeactivateAllModifier() {
+        for (int i = 0; i < lightModifers.Count; i++) {
+            SetActivateModifier(i, false);
+        }
+    }
+    public void SetActivateModifier(int index, bool active) {
+        if (lightModifers.Count >= index)
+            return;
+        lightModifers[index].active = active;
+    }
+    #endregion
+
 }

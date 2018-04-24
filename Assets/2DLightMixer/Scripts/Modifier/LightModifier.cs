@@ -13,6 +13,9 @@ public class LightModifier  {
     public ModifierType type;
     public Material material;
     public RenderTexture copyrtLight;
+
+    public bool active;
+
     //Blur
     [Range(0, 10)]
     public int iterations;
@@ -47,7 +50,8 @@ public class LightModifier  {
         
     }
     public void ApplyModifier(RenderTexture source, RenderTexture destination, RenderTexture rtLight) {
-
+        if (active == false)
+            return;
 
         switch (type) {
             case ModifierType.Blur:
@@ -88,6 +92,16 @@ public class LightModifier  {
     }
     public void OnInspector() {
 #if UNITY_EDITOR
+        if(active == false) {
+            if (GUILayout.Button("activate"))
+                active = true;
+            UnityEngine.GUI.backgroundColor = Color.red;
+        } else {
+            if (GUILayout.Button("deactivate"))
+                active = false;
+        }
+
+
         switch (type) {
             case ModifierType.Blur:
                 iterations = UnityEditor.EditorGUILayout.IntField("iteration", iterations);
@@ -104,8 +118,7 @@ public class LightModifier  {
             default:
                 break;
         }
-
-
+        UnityEngine.GUI.backgroundColor = Color.white;
 
 #endif
     }
