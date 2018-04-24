@@ -52,7 +52,8 @@ public class LightMixer : MonoBehaviour {
     [HideInInspector]
     public Camera cullingCam;
 
-    public LightModifier lightModifer;
+    public LightModifier.ModifierType modiferType;
+    public List<LightModifier> lightModifers = new List<LightModifier>();
     // Use this for initialization
     void Start () {
         UpdateMixer();
@@ -172,7 +173,9 @@ public class LightMixer : MonoBehaviour {
     {
         if (rtLight == null)
             return;
-        Blur(source, destination, rtLight);
+        for (int i = 0; i < lightModifers.Count; i++) {
+            lightModifers[i].ApplyModifier(source, destination, rtLight);
+        }
         switch (mixType)
         {
             case LightMixType.Add:

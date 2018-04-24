@@ -1,12 +1,10 @@
-﻿Shader "Hidden/Blur"
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Hidden/Blur"
 {
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		_ScreenWidth("Width", Float) = 100
-		_ScreenHeight("height", Float) = 100
-		_Length("sample length", Float) = 1
-		_Iteration("sample iteration", int) = 1
 	}
 	SubShader
 	{
@@ -42,44 +40,21 @@
 			}
 			
 			sampler2D _MainTex;
-			float _ScreenHeight,_ScreenWidth,_Length;
-			int _Iteration;
-			float2 GetUV(float2 coord){
-				return float2(coord.x /_ScreenWidth,coord.y / _ScreenHeight );
-			}
-			fixed4 SampleColor(float2 pos, float2 dir){
-				fixed4 blurCol = tex2D(_MainTex, GetUV(pos + dir * 1));
-				blurCol += tex2D(_MainTex, GetUV(pos + dir * 2));
-				blurCol += tex2D(_MainTex, GetUV(pos + dir * 3));
-				blurCol += tex2D(_MainTex, GetUV(pos + dir * 4));
-				return blurCol;
-			}
-			fixed4 frag (v2f i) : SV_Target
+			float4 _MainTex_TexelSize;
+
+			float4 box(sampler2D tex, float2 uv, float4 size)
 			{
-				fixed4 col = tex2D(_MainTex, i.uv);
-				float2 coord = float2(i.uv.x *_ScreenWidth,i.uv.y *_ScreenHeight);
-				fixed4 blurCol = col;
-				float length = _Length;
-				float2 t = float2(0,length);
-				float2 tr = float2(length,length);
-				float2 r = float2(length,0);
-				float2 br = float2(length,-length);
-				float2 b = float2(0,-length);
-				float2 bl = float2(-length,-length);
-				float2 l = float2(-length,0);
-				float2 tl = float2(-length,length);
-				for(int i = 1; i <= _Iteration;i++){
-					blurCol += SampleColor(coord, t * i);
-					blurCol += SampleColor(coord, tr * i);
-					blurCol += SampleColor(coord, r * i);
-					blurCol += SampleColor(coord, br * i);
-					blurCol += SampleColor(coord, b * i);
-					blurCol += SampleColor(coord, bl * i);
-					blurCol += SampleColor(coord, l * i);
-					blurCol += SampleColor(coord, tl * i);
-					blurCol /=8;
-				}	
-				return blurCol;
+				float4 c = tex2D(tex, uv + float2(-size.x, size.y)) + tex2D(tex, uv + float2(0, size.y)) + tex2D(tex, uv + float2(size.x, size.y)) +
+							tex2D(tex, uv + float2(-size.x, 0)) + tex2D(tex, uv + float2(0, 0)) + tex2D(tex, uv + float2(size.x, 0)) +
+							tex2D(tex, uv + float2(-size.x, -size.y)) + tex2D(tex, uv + float2(0, -size.y)) + tex2D(tex, uv + float2(size.x, -size.y));
+
+				return c / 9;
+			}
+
+			float4 frag (v2f i) : SV_Target
+			{
+				float4 col = box(_MainTex, i.uv, _MainTex_TexelSize);
+				return col;
 			}
 			ENDCG
 		}
