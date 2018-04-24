@@ -7,7 +7,7 @@ public class LightModifier  {
     public enum ModifierType {
         Blur,
         Cut,
-        CellShading,
+        lookUp,
         MixTexture
     }
     public ModifierType type;
@@ -18,8 +18,12 @@ public class LightModifier  {
     public int iterations;
     [Range(0, 4)]
     public int downRes;
-
-
+    //Cut
+    float cut;
+    float cutSmoothness;
+    //MixTexture
+    Texture blendTexture;
+    float blendTextureAmount;
 
     public LightModifier(ModifierType type) {
         this.type = type;
@@ -31,8 +35,9 @@ public class LightModifier  {
                 material = new Material(Shader.Find("Hidden/Blur"));
                 break;
             case ModifierType.Cut:
+                material = new Material(Shader.Find("Hidden/Cut"));
                 break;
-            case ModifierType.CellShading:
+            case ModifierType.lookUp:
                 break;
             case ModifierType.MixTexture:
                 break;
@@ -47,6 +52,9 @@ public class LightModifier  {
         switch (type) {
             case ModifierType.Blur:
                 Blur(source, destination,rtLight);
+                break;
+            case ModifierType.Cut:
+                Cut(source, destination, rtLight);
                 break;
             default:
                 break;
@@ -70,7 +78,14 @@ public class LightModifier  {
         RenderTexture.ReleaseTemporary(rt);
 
     }
-
+    void Cut(RenderTexture source, RenderTexture destination, RenderTexture rtLight) {
+        RenderTexture rt = RenderTexture.GetTemporary(rtLight.width, rtLight.height);
+        material.SetFloat("_Cut", cut);
+        material.SetFloat("_Smoothness", cut);
+        Graphics.Blit(rtLight, rt, material);
+        Graphics.Blit(rt, rtLight);
+        RenderTexture.ReleaseTemporary(rt);
+    }
     public void OnInspector() {
 #if UNITY_EDITOR
         switch (type) {
@@ -79,8 +94,10 @@ public class LightModifier  {
                 downRes = UnityEditor.EditorGUILayout.IntField("down resolution", downRes);
                 break;
             case ModifierType.Cut:
+                cut = UnityEditor.EditorGUILayout.FloatField("cut", cut);
+                cutSmoothness = UnityEditor.EditorGUILayout.FloatField("smoothness", cutSmoothness);
                 break;
-            case ModifierType.CellShading:
+            case ModifierType.lookUp:
                 break;
             case ModifierType.MixTexture:
                 break;
