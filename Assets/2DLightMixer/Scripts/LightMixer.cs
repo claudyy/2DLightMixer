@@ -171,8 +171,7 @@ public class LightMixer : MonoBehaviour {
     }
     void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
-        if (rtLight == null)
-            return;
+
         for (int i = 0; i < lightModifers.Count; i++) {
             lightModifers[i].ApplyModifier(source, destination, rtLight);
         }

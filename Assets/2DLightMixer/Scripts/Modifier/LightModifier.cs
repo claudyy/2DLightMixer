@@ -10,6 +10,10 @@ public class LightModifier  {
         lookUp,
         MixTexture
     }
+    public enum MixType {
+        multiply,
+        add
+    }
     public ModifierType type;
     public Material material;
     public RenderTexture copyrtLight;
@@ -22,11 +26,13 @@ public class LightModifier  {
     [Range(0, 4)]
     public int downRes;
     //Cut
-    float cut;
-    float cutSmoothness;
+    public float cut;
+    public float cutSmoothness;
     //MixTexture
-    Texture blendTexture;
-    float blendTextureAmount;
+    public MixType lastMixType;
+    public MixType mixType;
+    public Texture2D blendTexture;
+    public float blendTextureAmount;
 
     public LightModifier(ModifierType type) {
         this.type = type;
@@ -43,6 +49,7 @@ public class LightModifier  {
             case ModifierType.lookUp:
                 break;
             case ModifierType.MixTexture:
+                material = new Material(Shader.Find("Hidden/ModifierMultiply"));
                 break;
             default:
                 break;
@@ -60,10 +67,14 @@ public class LightModifier  {
             case ModifierType.Cut:
                 Cut(source, destination, rtLight);
                 break;
+            case ModifierType.MixTexture:
+                MixTexture(source, destination, rtLight);
+                break;
             default:
                 break;
         }
     }
+    #region Blur
     void Blur(RenderTexture source, RenderTexture destination,RenderTexture rtLight) {
         int width = rtLight.width >> downRes;
         int height = rtLight.height >> downRes;
@@ -82,6 +93,8 @@ public class LightModifier  {
         RenderTexture.ReleaseTemporary(rt);
 
     }
+    #endregion
+    #region Cut
     void Cut(RenderTexture source, RenderTexture destination, RenderTexture rtLight) {
         RenderTexture rt = RenderTexture.GetTemporary(rtLight.width, rtLight.height);
         material.SetFloat("_Cut", cut);
@@ -90,6 +103,29 @@ public class LightModifier  {
         Graphics.Blit(rt, rtLight);
         RenderTexture.ReleaseTemporary(rt);
     }
+    #endregion
+    #region mix Texture
+    void MixTexture(RenderTexture source, RenderTexture destination, RenderTexture rtLight) {
+        material.SetFloat("_Value", blendTextureAmount);
+        material.SetTexture("_Tex", blendTexture);
+        RenderTexture rt = RenderTexture.GetTemporary(rtLight.width, rtLight.height);
+        Graphics.Blit(rtLight, rt, material);
+        Graphics.Blit(rt, rtLight);
+        RenderTexture.ReleaseTemporary(rt);
+    }
+    void ChangeMixTexture() {
+        switch (mixType) {
+            case MixType.multiply:
+                material = new Material(Shader.Find("Hidden/ModifierMultiply"));
+                break;
+            case MixType.add:
+                material = new Material(Shader.Find("Hidden/ModifierAdd"));
+                break;
+            default:
+                break;
+        }
+    }
+    #endregion
     public void OnInspector() {
 #if UNITY_EDITOR
         if(active == false) {
@@ -114,10 +150,17 @@ public class LightModifier  {
             case ModifierType.lookUp:
                 break;
             case ModifierType.MixTexture:
+                mixType = (MixType)UnityEditor.EditorGUILayout.EnumPopup("Light mix type:", mixType);
+                blendTextureAmount = UnityEditor.EditorGUILayout.Slider(blendTextureAmount, 0, 1);
+                blendTexture = (Texture2D)UnityEditor.EditorGUILayout.ObjectField("Image", blendTexture, typeof(Texture2D), false);
+                if (mixType != lastMixType)
+                    ChangeMixTexture();
+                lastMixType = mixType;
                 break;
             default:
                 break;
         }
+
         UnityEngine.GUI.backgroundColor = Color.white;
 
 #endif
