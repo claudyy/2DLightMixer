@@ -33,6 +33,7 @@ public class LightModifier  {
     public MixType mixType;
     public Texture2D blendTexture;
     public float blendTextureAmount;
+    public float blendTextureSize;
 
     public LightModifier(ModifierType type) {
         this.type = type;
@@ -98,7 +99,7 @@ public class LightModifier  {
     void Cut(RenderTexture source, RenderTexture destination, RenderTexture rtLight) {
         RenderTexture rt = RenderTexture.GetTemporary(rtLight.width, rtLight.height);
         material.SetFloat("_Cut", cut);
-        material.SetFloat("_Smoothness", cut);
+        material.SetFloat("_Smoothness", cutSmoothness);
         Graphics.Blit(rtLight, rt, material);
         Graphics.Blit(rt, rtLight);
         RenderTexture.ReleaseTemporary(rt);
@@ -108,6 +109,9 @@ public class LightModifier  {
     void MixTexture(RenderTexture source, RenderTexture destination, RenderTexture rtLight) {
         material.SetFloat("_Value", blendTextureAmount);
         material.SetTexture("_Tex", blendTexture);
+        material.SetFloat("_Size", blendTextureSize);
+        material.SetVector("_ScreenParams", new Vector4(rtLight.width, rtLight.height,0,0));
+
         RenderTexture rt = RenderTexture.GetTemporary(rtLight.width, rtLight.height);
         Graphics.Blit(rtLight, rt, material);
         Graphics.Blit(rt, rtLight);
@@ -152,6 +156,7 @@ public class LightModifier  {
             case ModifierType.MixTexture:
                 mixType = (MixType)UnityEditor.EditorGUILayout.EnumPopup("Light mix type:", mixType);
                 blendTextureAmount = UnityEditor.EditorGUILayout.Slider(blendTextureAmount, 0, 1);
+                blendTextureSize = UnityEditor.EditorGUILayout.FloatField("Texture Size", blendTextureSize);
                 blendTexture = (Texture2D)UnityEditor.EditorGUILayout.ObjectField("Image", blendTexture, typeof(Texture2D), false);
                 if (mixType != lastMixType)
                     ChangeMixTexture();
