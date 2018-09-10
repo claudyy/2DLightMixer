@@ -21,13 +21,11 @@ public class LightModifier  {
     public bool active;
 
     //Blur
-    [Range(0, 10)]
-    public int iterations;
-    [Range(0, 4)]
-    public int downRes;
+    public int iterations = 2;
+    public int downRes = 2;
     //Cut
-    public float cut;
-    public float cutSmoothness;
+    public float cut = .5f;
+    public float cutSmoothness = .1f;
     //MixTexture
     public MixType lastMixType;
     public MixType mixType;
@@ -133,12 +131,8 @@ public class LightModifier  {
     public void OnInspector() {
 #if UNITY_EDITOR
         if(active == false) {
-            if (GUILayout.Button("activate"))
-                active = true;
             UnityEngine.GUI.backgroundColor = Color.red;
         } else {
-            if (GUILayout.Button("deactivate"))
-                active = false;
         }
 
 
