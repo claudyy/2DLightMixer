@@ -1,4 +1,6 @@
 
+# 2D Light Mixer
+
 With the 2D Light Mixer system, Sprites can be used to mix with a Post Processing shader over the target camera. There are various ways to mix it.
 
 How it works
